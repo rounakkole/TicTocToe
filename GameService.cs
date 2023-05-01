@@ -9,67 +9,105 @@ namespace TicTocToe
     internal class GameService
     {
 
-        public int GetPosition(int[] RepeatArray)
+
+
+        public int IsOver(int[] RepeatArray)
         {
-            Random random = new Random();
+            int Winner = 3;
 
-            bool IsRepeat;
-            int Position;
-            do
-            {
-                IsRepeat = false;
-                Position = random.Next(0, 9);
-                if (RepeatArray[Position] > 0)
-                {
-                    IsRepeat = true;
-                }
-
-
-            } while (IsRepeat == true);
-            return Position;
-        }
-
-        public bool GameOver(int[] RepeatArray)
-        {
-            bool IsOver = false;
-            bool IsEmpty = false;
             foreach (int num in RepeatArray)
             {
                 if (num < 1)
                 {
-                    IsEmpty = true;
+                    Winner = 0;
                 }
             }
 
             for (int i = 0; i < 3; i++)
             {
+                //147 258 369
                 if (RepeatArray[i] == RepeatArray[i + 3] && RepeatArray[i] == RepeatArray[i + 6] && RepeatArray[i] != 0)
                 {
-                    IsOver = true;
+                    Winner = RepeatArray[i];
                 }
-
-                if (RepeatArray[i * 3] == RepeatArray[i * 3 + 1] && RepeatArray[i * 3] == RepeatArray[i * 3 + 2] && RepeatArray[i * 3] != 0)
+                //123 456 789
+                else if (RepeatArray[i * 3] == RepeatArray[i * 3 + 1] && RepeatArray[i * 3] == RepeatArray[i * 3 + 2] && RepeatArray[i * 3] != 0)
                 {
-                    IsOver = true;
+                    Winner = RepeatArray[i * 3];
+                }
+
+            }
+
+            //159 357
+            if (RepeatArray[4] == RepeatArray[4 - 4] && RepeatArray[4] == RepeatArray[4 + 4] && RepeatArray[4] != 0)
+            {
+                Winner = RepeatArray[4];
+            }
+            else if (RepeatArray[4] == RepeatArray[4 - 2] && RepeatArray[4] == RepeatArray[4 + 2] && RepeatArray[4] != 0)
+            {
+                Winner = RepeatArray[4];
+            }
+
+            return Winner;
+        }
+
+
+
+
+        public void Print(int[] RepeatArray)
+        {
+
+            for (int i = 0; i < 9; i++)
+            {
+                Console.Write("\t{0}", RepeatArray[i]);
+                if ((i + 3) % 3 == 2)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine();
                 }
             }
-
-
-            if (RepeatArray[0] == RepeatArray[4] && RepeatArray[0] == RepeatArray[8] && RepeatArray[0] != 0)
-            {
-                IsOver = true;
-            }
-            else if (RepeatArray[2] == RepeatArray[4] && RepeatArray[2] == RepeatArray[6] && RepeatArray[2] != 0)
-            {
-                IsOver = true;
-            }
-
-
-            if (IsEmpty == false)
-            {
-                IsOver = true;
-            }
-            return IsOver;
         }
+
+
+
+
+        public int GetPosition(int[] RepeatArray, bool PlayTurn)
+        {
+            int Position;
+            Random random = new Random();
+            int[] RepeatArrayLocal = new int[9];
+
+            do
+            {
+                if (PlayTurn)
+                {
+                    Position = random.Next(0, 9);
+                    for (int k = 0; k < 9; k++)
+                    {
+                        RepeatArray.CopyTo(RepeatArrayLocal, 0);
+                        if (RepeatArrayLocal[k] == 0)
+                        {
+                            RepeatArrayLocal[k] = 2;
+                        }
+                        int Winner = 0;
+
+                        Winner = this.IsOver(RepeatArrayLocal);
+                        if (Winner == 2)
+                        {
+                            Position = k;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.Write("enter: ");
+                    Position = ((Convert.ToInt32(Console.ReadLine()) - 1) % 9);
+                }
+
+            } while (RepeatArray[Position] > 0);
+            return Position;
+        }
+
     }
 }

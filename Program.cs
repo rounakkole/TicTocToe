@@ -16,18 +16,20 @@ namespace TicTocToe
         public static void GamePlay()
         {
             int[] RepeatArray = new int[9];
-            bool IsOver = false;
+            int Winner = 0;
             bool PlayTurn = true;
             GameService gameService = new GameService();
 
 
-            while (IsOver == false)
+            while (Winner < 1)
             {
-                int Position = gameService.GetPosition(RepeatArray);
+                int Position = 0;
+                Position = gameService.GetPosition(RepeatArray, PlayTurn);
 
                 if (PlayTurn)
                 {
                     RepeatArray[Position] = 1;
+                    gameService.Print(RepeatArray);
                     PlayTurn = false;
                 }
                 else
@@ -36,19 +38,13 @@ namespace TicTocToe
                     PlayTurn = true;
                 }
 
-                IsOver = gameService.GameOver(RepeatArray);
-            }
+                Winner = gameService.IsOver(RepeatArray);
 
-
-            for (int i = 0; i < 9; i++)
-            {
-                Console.Write("\t{0}", RepeatArray[i]);
-                if ((i + 3) % 3 == 2)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine();
-                }
             }
+            gameService.Print(RepeatArray);
+            Console.WriteLine("winner: {0}", Winner);
+
         }
     }
 }
+
